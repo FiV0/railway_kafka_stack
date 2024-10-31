@@ -27,7 +27,7 @@ func main() {
 		"group.id":          "exampleConsumer",
 	}
 
-	fmt.Println("starting Kafka example in mode: %s\n", *mode)
+	fmt.Printf("starting Kafka example in mode: %s\n", *mode)
 	if *mode == "producer" {
 		kafkaProducer(*targetTopic, config)
 	} else if *mode == "consumer" {
