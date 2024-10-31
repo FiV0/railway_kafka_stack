@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
-	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -12,14 +12,12 @@ import (
 func kafkaConsumer(topic string, config *kafka.ConfigMap) {
 	consumer, err := kafka.NewConsumer(config)
 	if err != nil {
-		log.Printf("Failed to create consumer: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Failed to create consumer: %s\n", err)
 	}
 
 	err = consumer.Subscribe(topic, nil)
 	if err != nil {
-		log.Printf("Failed to create consumer: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Failed to create consumer: %s\n", err)
 	}
 
 	for {
@@ -27,7 +25,7 @@ func kafkaConsumer(topic string, config *kafka.ConfigMap) {
 		content := ""
 		if err == nil {
 			json.Unmarshal(msg.Value, &content)
-			log.Printf("consumed message from topic: %s", content)
+			fmt.Printf("consumed message from topic: %s\n", content)
 		} else {
 			log.Printf("consumer failed with kafka error: %s", err)
 			break

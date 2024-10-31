@@ -30,10 +30,10 @@ func kafkaProducer(topic string, config *kafka.ConfigMap) {
 			nil, // delivery channel
 		)
 		if err != nil {
-			log.Fatalf("failed to produce message: %s", err)
+			log.Printf("failed to produce message: %s", err)
 			break
 		}
-		log.Printf("sent message: '%s'", message)
+		fmt.Printf("sent message: '%s'\n", message)
 		counter += 1
 	}
 }
