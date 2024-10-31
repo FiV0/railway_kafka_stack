@@ -1,7 +1,10 @@
 # Refer to docs at https://docs.confluent.io/platform/current/installation/docker/config-reference.html
 services:
   kafka:
-    image: confluentinc/cp-kafka:7.7.1
+    # image: confluentinc/cp-kafka:7.7.1
+    build:
+      context: .
+      dockerfile: Dockerfile
     expose:
       - 9092
       - 9999
