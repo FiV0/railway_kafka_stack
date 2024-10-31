@@ -22,7 +22,7 @@ func kafkaConsumer(topic string, config *kafka.ConfigMap) {
 	}
 
 	for {
-		msg, err := consumer.ReadMessage(time.Second)
+		msg, err := consumer.ReadMessage(10 * time.Second)
 		content := ""
 		if err == nil {
 			json.Unmarshal(msg.Value, &content)
