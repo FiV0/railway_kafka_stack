@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -21,14 +22,13 @@ func kafkaConsumer(topic string, config *kafka.ConfigMap) {
 	}
 
 	for {
-		msg, err := consumer.ReadMessage(-1)
+		msg, err := consumer.ReadMessage(time.Second)
 		content := ""
 		if err == nil {
 			json.Unmarshal(msg.Value, &content)
 			fmt.Printf("consumed message from topic: %s\n", content)
 		} else {
-			log.Printf("consumer failed with kafka error: %s", err)
-			break
+			log.Fatalf("consumer failed with kafka error: %s", err)
 		}
 	}
 
