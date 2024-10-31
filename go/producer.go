@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -14,8 +13,7 @@ import (
 func kafkaProducer(topic string, config *kafka.ConfigMap) {
 	p, err := kafka.NewProducer(config)
 	if err != nil {
-		log.Printf("Failed to create producer: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Failed to create producer: %s\n", err)
 	}
 
 	counter := 0
@@ -23,17 +21,24 @@ func kafkaProducer(topic string, config *kafka.ConfigMap) {
 		<-time.After(1 * time.Second) // Produce a message every second
 		message := fmt.Sprintf("Example message #%d from producer", counter)
 		jsonmsg, _ := json.Marshal(message)
+
+		deliveries := make(chan kafka.Event)
 		err = p.Produce(&kafka.Message{
 			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 			Value:          jsonmsg,
-		},
-			nil, // delivery channel
+		}, deliveries,
 		)
 		if err != nil {
-			log.Printf("failed to produce message: %s", err)
-			break
+			log.Fatalf("failed to produce message: %s", err)
 		}
-		fmt.Printf("sent message: '%s'\n", message)
-		counter += 1
+
+		select {
+		case event := <-deliveries:
+			fmt.Printf("sent message: '%s'\n", message)
+			fmt.Println(event)
+			counter += 1
+		case <-time.After(1 * time.Second):
+			log.Fatalf("failed to send message '%s'", message)
+		}
 	}
 }
