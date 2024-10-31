@@ -1,0 +1,45 @@
+# Refer to docs at https://docs.confluent.io/platform/current/installation/docker/config-reference.html
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    expose:
+      - 9092
+      - 9999
+      - 29092
+      - 29093
+    ports:
+      - 29092:29092
+      - 29093:29093
+    environment:
+      CLUSTER_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_NODE_ID: "1"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+
+  producer:
+    depends_on:
+      - kafka
+    build:
+      context: "${EXAMPLE_LANGUAGE}/"
+      dockerfile: "Dockerfile"
+    environment:
+      KAFKA_BROKER_ADDRESS: "kafka:29092"
+    restart: always
+    command: "-mode producer"
+
+  consumer:
+    depends_on:
+      - kafka
+    build:
+      context: "${EXAMPLE_LANGUAGE}/"
+      dockerfile: "Dockerfile"
+    environment:
+      KAFKA_BROKER_ADDRESS: "kafka:29092"
+    restart: always
+    command: "-mode consumer"
