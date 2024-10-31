@@ -33,9 +33,8 @@ func kafkaProducer(topic string, config *kafka.ConfigMap) {
 		}
 
 		select {
-		case event := <-deliveries:
+		case <-deliveries:
 			fmt.Printf("sent message: '%s'\n", message)
-			fmt.Println(event)
 			counter += 1
 		case <-time.After(1 * time.Second):
 			log.Fatalf("failed to send message '%s'", message)
