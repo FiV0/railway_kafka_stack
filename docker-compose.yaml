@@ -25,24 +25,24 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
 
-  producer:
-    depends_on:
-      - kafka
-    build:
-      context: "${EXAMPLE_LANGUAGE}/"
-      dockerfile: "Dockerfile"
-    environment:
-      KAFKA_BROKER_ADDRESS: "kafka:29092"
-    restart: always
-    command: "-mode producer"
+  # producer:
+  #   depends_on:
+  #     - kafka
+  #   build:
+  #     context: "${EXAMPLE_LANGUAGE}/"
+  #     dockerfile: "Dockerfile"
+  #   environment:
+  #     KAFKA_BROKER_ADDRESS: "kafka:29092"
+  #   restart: always
+  #   command: "-mode producer"
 
-  consumer:
-    depends_on:
-      - kafka
-    build:
-      context: "${EXAMPLE_LANGUAGE}/"
-      dockerfile: "Dockerfile"
-    environment:
-      KAFKA_BROKER_ADDRESS: "kafka:29092"
-    restart: always
-    command: "-mode consumer"
+  # consumer:
+  #   depends_on:
+  #     - kafka
+  #   build:
+  #     context: "${EXAMPLE_LANGUAGE}/"
+  #     dockerfile: "Dockerfile"
+  #   environment:
+  #     KAFKA_BROKER_ADDRESS: "kafka:29092"
+  #   restart: always
+  #   command: "-mode consumer"
